@@ -4,149 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChangThai Imbiss Köln – Original Thaiküche in Sülz</title>
-    <!-- Bestehende Fonts & Meta Tags -->
+    <meta name="description" content="ChangThai – Authentische thailändische Küche in Köln-Sülz. Frisch zubereitet, original Thai-Rezepte.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Noto+Serif+Thai:wght@400;700&display=swap" rel="stylesheet">
-    
     <style>
-        :root{
-            --gold:#8C5028;
-            --gold-light:#A86838;
-            --gold-dark:#6E3E1C;
-            --black:#0c0c0c; /* Geändert auf echtes Dunkel für Kontrast */
-            --dark:#F8F5F1;
-            --cream:#2D2018;
-            --red-thai:#C44030;
-            --white:#FFFFFF;
-            --font-display:'Playfair Display',serif;
-            --font-body:'DM Sans',sans-serif;
+        :root {
+            --gold: #8C5028;
+            --gold-light: #A86838;
+            --gold-dark: #6E3E1C;
+            --black: #0c0c0c;
+            --dark: #F8F5F1;
+            --dark-warm: #F2EDE6;
+            --cream: #2D2018;
+            --red-thai: #C44030;
+            --green-thai: #3D8B4A;
+            --white: #FFFFFF;
+            --text-muted: #8C7E6E;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'DM Sans', -apple-system, sans-serif;
         }
 
-        /* --- BESTELLSYSTEM CSS --- */
-        
-        /* Plus Button in der Speisekarte */
-        .menu-item { position: relative; cursor: pointer; transition: 0.3s; }
-        .add-to-cart-btn {
-            background: var(--gold);
-            color: white;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            flex-shrink: 0;
-        }
-        .add-to-cart-btn:hover { background: var(--gold-light); transform: scale(1.1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background: var(--white); color: var(--cream); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
-        /* Floating Cart Button */
+        /* ===== NAVIGATION ===== */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 3rem; display: flex; justify-content: space-between; align-items: center; transition: all .5s cubic-bezier(.22,1,.36,1); }
+        nav.scrolled { background: rgba(255,255,255,.95); backdrop-filter: blur(20px); padding: .5rem 3rem; border-bottom: 1px solid rgba(140,80,40,.18); }
+        .nav-logo-img { height: 55px; transition: 0.4s; }
+        nav.scrolled .nav-logo-img { height: 40px; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; align-items: center; }
+        .nav-links a { color: var(--cream); text-decoration: none; font-size: .82rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a:hover { color: var(--gold); }
+        .nav-phone { color: var(--gold)!important; font-weight: 700!important; }
+
+        /* ===== SHOPPING CART SYSTEM ===== */
         #floating-cart {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--gold);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 1001;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transform: translateY(100px);
-            transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            position: fixed; bottom: 30px; right: 30px; background: var(--gold); color: white;
+            padding: 15px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1001; display: flex; align-items: center; gap: 10px; cursor: pointer;
+            font-weight: 600; transform: translateY(120px); transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
         #floating-cart.visible { transform: translateY(0); }
+        .cart-count-badge { background: white; color: var(--gold); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; }
 
-        /* Cart Sidebar (Drawer) */
         .cart-drawer {
-            position: fixed;
-            top: 0;
-            right: -450px;
-            width: 100%;
-            max-width: 400px;
-            height: 100%;
-            background: var(--white);
-            z-index: 2000;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-            transition: 0.4s ease;
-            display: flex;
-            flex-direction: column;
+            position: fixed; top: 0; right: -450px; width: 100%; max-width: 400px; height: 100%;
+            background: var(--white); z-index: 2000; box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            transition: 0.4s ease; display: flex; flex-direction: column;
         }
         .cart-drawer.open { right: 0; }
-        .cart-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: var(--dark); }
+        .cart-header { padding: 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
         .cart-content { flex: 1; overflow-y: auto; padding: 20px; }
-        .cart-footer { padding: 20px; border-top: 1px solid #eee; background: var(--dark); }
-        .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; }
-        .cart-item-qty { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
-        
-        /* Modal für Protein-Auswahl */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 3000;
-        }
-        .modal {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .option-list { list-style: none; margin-top: 20px; }
-        .option-item {
-            padding: 12px;
-            border: 1px solid #eee;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .option-item:hover { border-color: var(--gold); background: var(--dark); }
-        
-        .checkout-btn {
-            background: var(--gold);
-            color: white;
-            width: 100%;
-            padding: 15px;
-            border: none;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        .cart-footer { padding: 25px; border-top: 1px solid #eee; background: var(--dark); }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #f5f5f5; }
+        .checkout-btn { background: var(--gold); color: white; width: 100%; padding: 18px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .checkout-btn:hover { background: var(--gold-dark); }
 
-        /* Vorhandene Styles beibehalten... */
-        body{font-family:var(--font-body);background:var(--white);color:var(--cream);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-        nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1rem 3rem;display:flex;justify-content:space-between;align-items:center;transition:all .5s cubic-bezier(.22,1,.36,1)}
-        nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(20px);padding:.5rem 3rem;border-bottom:1px solid rgba(140,80,40,.18)}
-        /* ... (Alle anderen Styles aus deinem Original-Code hier einfügen) ... */
+        /* Selection Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 3000; padding: 20px; }
+        .modal { background: white; padding: 30px; border-radius: 15px; width: 100%; max-width: 500px; }
+        .option-item { padding: 15px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+        .option-item:hover { border-color: var(--gold); background: var(--dark); }
+
+        /* ===== HERO ===== */
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; text-align: center; background: var(--black); color: white; padding: 20px; }
+        .hero-logo { width: clamp(250px, 40vw, 500px); margin-bottom: 2rem; }
+        .hero-tagline { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 1rem; }
+        .hero-tagline strong { color: var(--gold-light); }
+
+        /* ===== MENU SECTION ===== */
+        section { padding: 6rem 10%; }
+        .section-label { color: var(--gold); text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.8rem; margin-bottom: 1rem; }
+        .section-title { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 2rem; }
+        
+        .speisekarte-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 3rem; }
+        .tab-btn { padding: 10px 20px; border: 1px solid #ddd; background: none; cursor: pointer; transition: 0.3s; font-family: inherit; }
+        .tab-btn.active { background: var(--gold); color: white; border-color: var(--gold); }
+
+        .menu-category { display: none; }
+        .menu-category.active { display: block; }
+        .menu-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .menu-item { background: var(--dark); padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: flex-start; transition: 0.3s; border: 1px solid transparent; }
+        .menu-item:hover { border-color: var(--gold); transform: translateY(-3px); }
+        .menu-item-name { font-weight: 700; font-family: var(--font-display); font-size: 1.1rem; }
+        .menu-item-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; }
+        
+        .add-btn { background: var(--gold); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .add-btn:hover { background: var(--gold-light); transform: rotate(90deg); }
+
+        /* TV Banner */
+        .tv-banner { background: #1a140e; color: white; text-align: center; padding: 80px 20px; }
+        .tv-card { background: rgba(255,255,255,0.05); padding: 30px; border: 1px solid var(--gold); margin: 20px; border-radius: 15px; }
+
+        /* Utility */
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s all ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            section { padding: 4rem 5%; }
+            .menu-items { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- DEIN BESTEHENDER NAV CODE -->
+    <!-- NAVIGATION -->
     <nav id="navbar">
-        <a href="#home" class="nav-logo-wrap">
-            <img src="data:image/png;base64,..." alt="ChangThai" class="nav-logo-img">
-        </a>
+        <div class="nav-logo-wrap">
+            <img src="data:image/png;base64,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" alt="ChangThai" class="nav-logo-img">
+        </div>
         <ul class="nav-links" id="navLinks">
             <li><a href="#about">Über uns</a></li>
             <li><a href="#speisekarte">Speisekarte</a></li>
+            <li><a href="#nachhaltigkeit">Nachhaltigkeit</a></li>
             <li><a href="#kontakt">Kontakt</a></li>
             <li><a href="tel:022129966093" class="nav-phone">☎ 0221 299 660 93</a></li>
         </ul>
@@ -155,190 +128,231 @@
     <!-- FLOATING CART BUTTON -->
     <div id="floating-cart" onclick="toggleCart()">
         <span>🛒</span>
-        <span id="cart-count">0</span> Gerichte - <span id="cart-total-float">0,00 €</span>
+        <span id="cart-count" class="cart-count-badge">0</span>
+        <span id="cart-total-float">0,00 €</span>
     </div>
 
-    <!-- CART DRAWER -->
+    <!-- CART SIDEBAR -->
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-header">
             <h3>Dein Warenkorb</h3>
-            <button onclick="toggleCart()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+            <button onclick="toggleCart()" style="background:none; border:none; font-size:2rem; cursor:pointer;">&times;</button>
         </div>
         <div class="cart-content" id="cartItems">
-            <p style="text-align:center; color:#888;">Dein Warenkorb ist noch leer.</p>
+            <p style="text-align:center; color:#888; margin-top:50px;">Dein Warenkorb ist noch leer.</p>
         </div>
         <div class="cart-footer">
-            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; margin-bottom:15px;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; margin-bottom:20px;">
                 <span>Gesamtbetrag</span>
                 <span id="cart-sum">0,00 €</span>
             </div>
-            <button class="checkout-btn" onclick="alert('Bestellung wird an WhatsApp/System gesendet...')">Zur Kasse</button>
+            <button class="checkout-btn" onclick="sendOrder()">Jetzt bestellen via WhatsApp</button>
         </div>
     </div>
 
-    <!-- OPTION MODAL -->
+    <!-- PROTEIN MODAL -->
     <div class="modal-overlay" id="optionModal">
         <div class="modal">
             <h3 id="modalTitle">Wähle deine Beilage</h3>
-            <div id="optionList" class="option-list">
+            <div id="optionList" style="margin-top:20px;">
                 <!-- Wird dynamisch befüllt -->
             </div>
-            <button class="btn btn-outline" style="width:100%; margin-top:15px;" onclick="closeModal()">Abbrechen</button>
+            <button onclick="closeModal()" style="width:100%; padding:10px; margin-top:10px; background:none; border:1px solid #ddd; cursor:pointer;">Abbrechen</button>
         </div>
     </div>
 
-    <!-- DEIN BESTEHENDER HERO CODE -->
-    <section class="hero" id="home">...</section>
-
-    <!-- SPEISEKARTE (Beispiel für Integration der Buttons) -->
-    <section class="speisekarte" id="speisekarte">
-        <div class="speisekarte-header">
-            <div class="section-label">Speisekarte</div>
-            <h2 class="section-title">Unsere Gerichte</h2>
-        </div>
-
-        <!-- Beispiel-Kategorie -->
-        <div class="menu-category active">
-            <div class="menu-items">
-                <!-- Beispiel 1: Fingerfood (Ohne Auswahl) -->
-                <div class="menu-item" onclick="quickAdd('03', 'Popia Tord', 5.00)">
-                    <div class="menu-item-info">
-                        <div class="menu-item-name"><span class="menu-item-num">03</span>Popia Tord</div>
-                        <div class="menu-item-desc">Frittierte Thai-Frühlingsrollen</div>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div class="menu-item-price">5,00 €</div>
-                        <button class="add-to-cart-btn">+</button>
-                    </div>
-                </div>
-
-                <!-- Beispiel 2: Curry (Mit Auswahl) -->
-                <div class="menu-item" onclick="openOptions('31', 'Gaeng Kiaw Waan', 9.00)">
-                    <div class="menu-item-info">
-                        <div class="menu-item-name"><span class="menu-item-num">31</span>Gaeng Kiaw Waan</div>
-                        <div class="menu-item-desc">Grünes Thai-Curry mit Kokosmilch...</div>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div class="menu-item-price">ab 9,00 €</div>
-                        <button class="add-to-cart-btn">+</button>
-                    </div>
-                </div>
+    <!-- HERO -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <img src="data:image/png;base64,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" alt="ChangThai Logo" class="hero-logo">
+            <p class="hero-tagline"><strong>Authentisch.</strong> Unschlagbar.</p>
+            <div class="hero-cta-group">
+                <a href="#speisekarte" class="btn btn-primary">Speisekarte</a>
+                <a href="tel:022129966093" class="btn btn-outline">Jetzt anrufen</a>
             </div>
         </div>
     </section>
 
-    <!-- RESTLICHER CODE (About, Kontakt, Footer) -->
+    <!-- SPEISEKARTE -->
+    <section class="speisekarte" id="speisekarte">
+        <div class="speisekarte-header reveal">
+            <div class="section-label">Speisekarte</div>
+            <h2 class="section-title">Unsere thailändische Auswahl</h2>
+        </div>
+
+        <div class="speisekarte-tabs reveal">
+            <button class="tab-btn active" onclick="showCategory('finger')">Finger Food</button>
+            <button class="tab-btn" onclick="showCategory('curries')">Curries</button>
+            <button class="tab-btn" onclick="showCategory('nudeln')">Reis & Nudeln</button>
+        </div>
+
+        <div id="category-finger" class="menu-category active">
+            <div class="menu-items">
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">03 Popia Tord</div>
+                        <div class="menu-item-desc">Frittierte Thai-Frühlingsrollen</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <div class="menu-item-price">5,00 €</div>
+                        <button class="add-btn" onclick="quickAdd('03', 'Popia Tord', 5.00)">+</button>
+                    </div>
+                </div>
+                <!-- Weitere Finger Food Items... -->
+            </div>
+        </div>
+
+        <div id="category-curries" class="menu-category">
+            <div class="menu-items">
+                <div class="menu-item">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name">31 Gaeng Kiaw Waan 🌶</div>
+                        <div class="menu-item-desc">Grünes Thai-Curry mit Kokosmilch</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <div class="menu-item-price">ab 9,00 €</div>
+                        <button class="add-btn" onclick="openOptions('31', 'Gaeng Kiaw Waan', 9.00)">+</button>
+                    </div>
+                </div>
+                <!-- Weitere Curry Items... -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="background:var(--dark); padding:40px; text-align:center;">
+        <p>© 2025 ChangThai Imbiss Köln</p>
+    </footer>
 
     <script>
         // --- WARENKORB LOGIK ---
         let cart = [];
-        
-        const proteins = [
+        const proteinOptions = [
             { name: "Hühnerfleisch", extra: 0 },
-            { name: "Tofu", extra: 0 },
+            { name: "Tofu 🌿", extra: 0 },
             { name: "Rindfleisch", extra: 2.00 },
             { name: "Garnelen", extra: 3.50 },
             { name: "Knusprige Ente", extra: 4.00 }
         ];
 
-        let pendingItem = null;
+        let currentItem = null;
 
         function toggleCart() {
             document.getElementById('cartDrawer').classList.toggle('open');
         }
 
+        function showCategory(cat) {
+            document.querySelectorAll('.menu-category').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('category-' + cat).classList.add('active');
+            event.target.classList.add('active');
+        }
+
         function openOptions(id, name, basePrice) {
-            pendingItem = { id, name, basePrice };
+            currentItem = { id, name, basePrice };
             const list = document.getElementById('optionList');
             list.innerHTML = '';
             
-            proteins.forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'option-item';
-                item.innerHTML = `<span>${p.name}</span> <span>+ ${(p.extra).toFixed(2)} €</span>`;
-                item.onclick = () => selectOption(p);
-                list.appendChild(item);
+            proteinOptions.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'option-item';
+                div.innerHTML = `<span>${opt.name}</span> <span>+ ${opt.extra.toFixed(2)} €</span>`;
+                div.onclick = () => selectProtein(opt);
+                list.appendChild(div);
             });
             document.getElementById('optionModal').style.display = 'flex';
+        }
+
+        function selectProtein(opt) {
+            const item = {
+                cartId: currentItem.id + opt.name,
+                name: currentItem.name + " (" + opt.name + ")",
+                price: currentItem.basePrice + opt.extra,
+                qty: 1
+            };
+            addToCart(item);
+            closeModal();
+        }
+
+        function quickAdd(id, name, price) {
+            addToCart({ cartId: id, name: name, price: price, qty: 1 });
+        }
+
+        function addToCart(newItem) {
+            const found = cart.find(i => i.cartId === newItem.cartId);
+            if (found) {
+                found.qty++;
+            } else {
+                cart.push(newItem);
+            }
+            updateCartUI();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.cartId !== id);
+            updateCartUI();
         }
 
         function closeModal() {
             document.getElementById('optionModal').style.display = 'none';
         }
 
-        function selectOption(protein) {
-            const finalPrice = pendingItem.basePrice + protein.extra;
-            const cartItem = {
-                id: pendingItem.id + '-' + protein.name,
-                displayName: `${pendingItem.name} (${protein.name})`,
-                price: finalPrice,
-                qty: 1
-            };
-            addToCart(cartItem);
-            closeModal();
-        }
-
-        function quickAdd(id, name, price) {
-            addToCart({ id, displayName: name, price, qty: 1 });
-        }
-
-        function addToCart(newItem) {
-            const existing = cart.find(item => item.id === newItem.id);
-            if (existing) {
-                existing.qty++;
-            } else {
-                cart.push(newItem);
-            }
-            updateUI();
-            if(!document.getElementById('cartDrawer').classList.contains('open')) {
-                // Optional: Öffne Warenkorb beim ersten Hinzufügen
-            }
-        }
-
-        function removeFromCart(id) {
-            cart = cart.filter(item => item.id !== id);
-            updateUI();
-        }
-
-        function updateUI() {
-            const container = document.getElementById('cartItems');
-            const countEl = document.getElementById('cart-count');
+        function updateCartUI() {
+            const list = document.getElementById('cartItems');
             const totalFloat = document.getElementById('cart-total-float');
             const totalSum = document.getElementById('cart-sum');
+            const countBadge = document.getElementById('cart-count');
             
             if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#888;">Dein Warenkorb ist leer.</p>';
+                list.innerHTML = '<p style="text-align:center; color:#888; margin-top:50px;">Dein Warenkorb ist leer.</p>';
                 document.getElementById('floating-cart').classList.remove('visible');
+                totalSum.innerText = "0,00 €";
             } else {
                 document.getElementById('floating-cart').classList.add('visible');
-                container.innerHTML = '';
+                list.innerHTML = '';
                 let total = 0;
                 let count = 0;
 
                 cart.forEach(item => {
                     total += item.price * item.qty;
                     count += item.qty;
-                    container.innerHTML += `
+                    list.innerHTML += `
                         <div class="cart-item">
-                            <div>
-                                <strong>${item.displayName}</strong><br>
-                                <div class="cart-item-qty">
-                                    <small>${item.qty} x ${item.price.toFixed(2)} €</small>
-                                    <button onclick="removeFromCart('${item.id}')" style="color:red; border:none; background:none; cursor:pointer;">Löschen</button>
-                                </div>
+                            <div style="flex:1">
+                                <strong>${item.name}</strong><br>
+                                <small>${item.qty} x ${item.price.toFixed(2)} €</small>
                             </div>
-                            <div>${(item.price * item.qty).toFixed(2)} €</div>
+                            <div style="text-align:right">
+                                <div>${(item.price * item.qty).toFixed(2)} €</div>
+                                <button onclick="removeFromCart('${item.cartId}')" style="color:red; background:none; border:none; cursor:pointer; font-size:0.7rem;">Entfernen</button>
+                            </div>
                         </div>
                     `;
                 });
-
-                countEl.innerText = count;
-                totalFloat.innerText = total.toFixed(2) + ' €';
-                totalSum.innerText = total.toFixed(2) + ' €';
+                totalFloat.innerText = total.toFixed(2) + " €";
+                totalSum.innerText = total.toFixed(2) + " €";
+                countBadge.innerText = count;
             }
         }
 
-        // DEIN BESTEHENDER JS CODE (Scroll, Reveal, Tabs)...
+        function sendOrder() {
+            let text = "Neue Bestellung von ChangThai Webseite:\n\n";
+            cart.forEach(item => {
+                text += `${item.qty}x ${item.name} - ${(item.price * item.qty).toFixed(2)}€\n`;
+            });
+            text += "\nGesamt: " + document.getElementById('cart-sum').innerText;
+            
+            const encoded = encodeURIComponent(text);
+            window.open(`https://wa.me/4922129966093?text=${encoded}`, '_blank');
+        }
+
+        // Simple Reveal Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
