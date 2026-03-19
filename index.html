@@ -3,178 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChangThai Köln - Bestellsystem</title>
+    <title>ChangThai Köln | Authentische Thaiküche in Sülz</title>
     
-    <!-- PayPal SDK integrieren (Ersetze YOUR_CLIENT_ID) -->
-    <!-- 'currency=EUR' und 'components=buttons,marks,funding-eligibility' aktivieren die versch. Zahlarten -->
-    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR&components=buttons"></script>
+    <!-- SEO & Metadaten -->
+    <meta name="description" content="ChangThai Köln-Sülz: Original thailändische Rezepte, frisch im Wok zubereitet. TV-bekannt und ausgezeichnet. Jetzt Speisekarte ansehen!">
+    <meta name="keywords" content="Thai Restaurant Köln, Thailändisch Essen Sülz, ChangThai Köln, Thai Imbiss Köln">
+    
+    <!-- JSON-LD für Google (LocalBusiness) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "ChangThai Imbiss Köln",
+      "image": "https://www.changthai-koeln.de/assets/logo.png",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Berrenrather Straße 196",
+        "addressLocality": "Köln",
+        "postalCode": "50939",
+        "addressCountry": "DE"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 50.919878,
+        "longitude": 6.926943
+      },
+      "telephone": "+4922129966093",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "11:30",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Sunday",
+          "opens": "14:00",
+          "closes": "22:00"
+        }
+      ]
+    }
+    </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --gold: #8C5028;
-            --cream: #F2EDE6;
-            --white: #FFFFFF;
-            --dark: #2D2018;
+            --gold-light: #A86838;
+            --bg-light: #fdfbf7; /* Zen-Weiß (Auge entspannend) */
+            --text-dark: #2D2018;
+            --text-muted: #6e655c;
+            --white: #ffffff;
+            --thai-red: #C44030;
+            --thai-green: #3D8B4A;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        body { font-family: 'DM Sans', sans-serif; margin: 0; background: #f9f9f9; }
-        header { background: white; padding: 1rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); sticky: top; }
-        
-        .container { max-width: 1100px; margin: 20px auto; display: grid; grid-template-columns: 1fr 350px; gap: 20px; padding: 10px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
-        /* Speisekarte */
-        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .dish-card { background: white; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd; }
-        .dish-info h3 { margin: 0; font-size: 1.1rem; }
-        .dish-info p { margin: 5px 0; font-size: 0.85rem; color: #666; }
-        .add-btn { background: var(--gold); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        /* Warenkorb Sidebar */
-        .cart-sidebar { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: fit-content; position: sticky; top: 20px; }
-        .cart-title { font-family: 'Playfair Display'; font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid var(--gold); padding-bottom: 5px; }
-        .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
-        .cart-total { font-weight: bold; font-size: 1.2rem; margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px; display: flex; justify-content: space-between; }
-        
-        #paypal-button-container { margin-top: 20px; }
+        /* TYPOGRAPHY */
+        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 700; }
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--gold);
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        /* NAVIGATION */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 5%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo { height: 50px; transition: var(--transition); }
+        nav.scrolled .logo { height: 40px; }
+
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            transition: var(--transition);
+        }
+        .nav-links a:hover { color: var(--gold); }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 5%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0) 0%, var(--bg-light) 100%);
+        }
+
+        .hero-content { max-width: 800px; }
+        .hero-title { font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1.1; margin-bottom: 1.5rem; }
+        .hero-title span { color: var(--gold); }
+
+        /* BUTTONS */
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 0;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            display: inline-block;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .btn-primary { background: var(--gold); color: var(--white); }
+        .btn-primary:hover { background: var(--text-dark); transform: translateY(-3px); }
+
+        /* MENU SECTION */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem;
+            background: var(--white);
+            border-bottom: 1px solid #eee;
+            transition: var(--transition);
+        }
+        .menu-item:hover { background: #fffcf9; border-color: var(--gold); }
+
+        .item-name { font-weight: 700; font-size: 1.1rem; }
+        .item-price { color: var(--gold); font-weight: 700; }
+
+        /* REVEAL ANIMATION */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* MOBILE CTA */
+        .mobile-call {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--thai-green);
+            color: white;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            z-index: 999;
+        }
 
         @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .cart-sidebar { position: static; }
+            .nav-links { display: none; }
+            .mobile-call { display: flex; }
+            .menu-grid { grid-template-columns: 1fr; }
         }
+
     </style>
 </head>
 <body>
 
-<header>
-    <h1>ChangThai Köln - Online Bestellung</h1>
-</header>
+    <nav id="mainNav">
+        <a href="#"><img src="logo-changthai.webp" alt="ChangThai Logo" class="logo"></a>
+        <ul class="nav-links">
+            <li><a href="#menu">Speisekarte</a></li>
+            <li><a href="#about">Über uns</a></li>
+            <li><a href="#contact">Kontakt</a></li>
+            <li><a href="tel:+4922129966093" style="color: var(--gold);">0221 299 660 93</a></li>
+        </ul>
+    </nav>
 
-<div class="container">
-    <!-- Speisekarte -->
-    <div class="menu-section">
-        <div class="menu-grid">
-            <!-- Beispiel 1 -->
-            <div class="dish-card">
-                <div class="dish-info">
-                    <h3>31. Gaeng Kiaw Waan (Grünes Curry)</h3>
-                    <p>Hähnchen, Kokosmilch, Thai-Basilikum</p>
-                    <strong>9.50 €</strong>
+    <section class="hero">
+        <div class="hero-content reveal">
+            <span class="section-label">Seit 2013 in Köln-Sülz</span>
+            <h1 class="hero-title">Authentisch. Frisch. <span>Unschlagbar.</span></h1>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">Erleben Sie die echte Thaiküche mitten im Herzen von Köln. Keine Kompromisse, nur Originalrezepte.</p>
+            <a href="#menu" class="btn btn-primary">Zur Speisekarte</a>
+        </div>
+    </section>
+
+    <section id="menu" style="padding: 100px 5%;">
+        <div class="reveal">
+            <span class="section-label">Wok-Spezialitäten</span>
+            <h2>Aus unserem Wok</h2>
+            <div class="menu-grid">
+                <!-- Beispiel-Item -->
+                <div class="menu-item">
+                    <div>
+                        <div class="item-name">Pad Thai</div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Reisnudeln, Erdnüsse, Ei, Tamarind-Sauce</p>
+                    </div>
+                    <div class="item-price">12.50€</div>
                 </div>
-                <button class="add-btn" onclick="addToCart('Grünes Curry', 9.50)">+</button>
-            </div>
-            <!-- Beispiel 2 -->
-            <div class="dish-card">
-                <div class="dish-info">
-                    <h3>63. Pad Thai</h3>
-                    <p>Reisnudeln, Erdnüsse, Ei, Garnelen</p>
-                    <strong>11.50 €</strong>
+                <div class="menu-item">
+                    <div>
+                        <div class="item-name">Gaeng Kiaw Waan</div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Grünes Curry, Kokosmilch, Thai-Auberginen</p>
+                    </div>
+                    <div class="item-price">13.90€</div>
                 </div>
-                <button class="add-btn" onclick="addToCart('Pad Thai', 11.50)">+</button>
-            </div>
-            <!-- Beispiel 3 -->
-            <div class="dish-card">
-                <div class="dish-info">
-                    <h3>03. Popia Tord (Frühlingsrollen)</h3>
-                    <p>4 Stück, vegetarisch mit Dip</p>
-                    <strong>5.00 €</strong>
-                </div>
-                <button class="add-btn" onclick="addToCart('Frühlingsrollen', 5.00)">+</button>
+                <!-- Weitere Items hier... -->
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Warenkorb -->
-    <div class="cart-sidebar">
-        <div class="cart-title">Dein Warenkorb</div>
-        <div id="cart-items">
-            <p style="color: #999;">Der Warenkorb ist leer.</p>
-        </div>
-        <div class="cart-total">
-            <span>Gesamtbetrag:</span>
-            <span id="total-amount">0.00 €</span>
-        </div>
+    <a href="tel:+4922129966093" class="mobile-call">📞</a>
 
-        <!-- PayPal Button Integration -->
-        <div id="paypal-button-container"></div>
-    </div>
-</div>
+    <script>
+        // Scroll Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
 
-<script>
-    let cart = [];
-    let total = 0;
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    function addToCart(name, price) {
-        cart.push({ name, price });
-        total += price;
-        renderCart();
-    }
-
-    function renderCart() {
-        const container = document.getElementById('cart-items');
-        const totalContainer = document.getElementById('total-amount');
-        
-        if (cart.length === 0) {
-            container.innerHTML = '<p style="color: #999;">Der Warenkorb ist leer.</p>';
-            totalContainer.innerText = "0.00 €";
-            return;
-        }
-
-        container.innerHTML = cart.map((item, index) => `
-            <div class="cart-item">
-                <span>${item.name}</span>
-                <span>${item.price.toFixed(2)} €</span>
-            </div>
-        `).join('');
-
-        totalContainer.innerText = total.toFixed(2) + " €";
-        
-        // Buttons nur rendern, wenn etwas im Korb ist und sie noch nicht da sind
-        if (cart.length > 0 && !document.querySelector('.paypal-buttons')) {
-            initPayPalButton();
-        }
-    }
-
-    function initPayPalButton() {
-        paypal.Buttons({
-            // Ermöglicht PayPal, Pay Later, SEPA, Debit/Credit & Apple/Google Pay (je nach Browser/Konto)
-            style: {
-                layout: 'vertical',
-                color:  'gold',
-                shape:  'rect',
-                label:  'checkout'
-            },
-
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: total.toFixed(2) // Dynamischer Betrag aus dem Warenkorb
-                        },
-                        description: "ChangThai Essen Bestellung"
-                    }]
-                });
-            },
-
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    alert('Zahlung erfolgreich! Vielen Dank, ' + details.payer.name.given_name + '!');
-                    // Hier könntest du den Warenkorb leeren oder an dein Küchensystem senden
-                    cart = [];
-                    total = 0;
-                    renderCart();
-                    document.getElementById('paypal-button-container').innerHTML = "<p>Bestellung erhalten!</p>";
-                });
-            },
-
-            onError: function(err) {
-                console.error('PayPal Error:', err);
-                alert('Es gab einen Fehler bei der Zahlung. Bitte versuchen Sie es erneut.');
-            }
-        }).render('#paypal-button-container');
-    }
-</script>
-
+        // Nav Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+    </script>
 </body>
 </html>
