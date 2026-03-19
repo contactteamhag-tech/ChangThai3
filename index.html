@@ -3,255 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChangThai Imbiss Köln – Original Thaiküche in Sülz</title>
-    <meta name="description" content="ChangThai – Authentische thailändische Küche in Köln-Sülz. Frisch zubereitet, original Thai-Rezepte.">
+    <title>ChangThai Köln - Bestellsystem</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;700&family=Noto+Serif+Thai:wght@400;700&display=swap" rel="stylesheet">
+    <!-- PayPal SDK integrieren (Ersetze YOUR_CLIENT_ID) -->
+    <!-- 'currency=EUR' und 'components=buttons,marks,funding-eligibility' aktivieren die versch. Zahlarten -->
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR&components=buttons"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --gold: #8C5028;
-            --gold-light: #A86838;
-            --black: #FFFFFF;
-            --dark: #F8F5F1;
-            --dark-warm: #F2EDE6;
-            --cream: #2D2018;
+            --cream: #F2EDE6;
             --white: #FFFFFF;
-            --text-muted: #8C7E6E;
-            --font-display: 'Playfair Display', serif;
-            --font-body: 'DM Sans', sans-serif;
-            --font-thai: 'Noto Serif Thai', serif;
+            --dark: #2D2018;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: var(--font-body); background: var(--black); color: var(--cream); overflow-x: hidden; }
-
-        /* NAV */
-        nav { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 1rem 3rem; display: flex; justify-content: space-between; align-items: center; transition: .4s; }
-        nav.scrolled { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 0.5rem 3rem; border-bottom: 1px solid rgba(140,80,40,0.1); }
-        .nav-logo-img { height: 50px; }
-        .nav-links { display: flex; gap: 2rem; list-style: none; }
-        .nav-links a { text-decoration: none; color: var(--cream); font-weight: 500; text-transform: uppercase; font-size: 0.8rem; }
-        .nav-links a:hover { color: var(--gold); }
-
-        /* HERO */
-        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--dark-warm); text-align: center; position: relative; }
-        .hero-content { z-index: 2; }
-        .hero-logo { width: 300px; margin-bottom: 1rem; }
-        .hero-tagline { font-family: var(--font-display); font-size: 2.5rem; color: var(--gold); }
-
-        /* SPEISEKARTE SYSTEM */
-        .speisekarte { padding: 6rem 1rem; max-width: 1200px; margin: 0 auto; }
-        .section-title { text-align: center; font-family: var(--font-display); font-size: 3rem; margin-bottom: 2rem; }
+        body { font-family: 'DM Sans', sans-serif; margin: 0; background: #f9f9f9; }
+        header { background: white; padding: 1rem; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); sticky: top; }
         
-        .menu-tabs { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 3rem; }
-        .tab-btn { padding: 0.8rem 1.5rem; border: 1px solid var(--gold); background: transparent; color: var(--gold); cursor: pointer; font-weight: bold; transition: 0.3s; border-radius: 5px; }
-        .tab-btn.active, .tab-btn:hover { background: var(--gold); color: white; }
+        .container { max-width: 1100px; margin: 20px auto; display: grid; grid-template-columns: 1fr 350px; gap: 20px; padding: 10px; }
 
-        .menu-container { display: none; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-        .menu-container.active { display: grid; }
+        /* Speisekarte */
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .dish-card { background: white; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd; }
+        .dish-info h3 { margin: 0; font-size: 1.1rem; }
+        .dish-info p { margin: 5px 0; font-size: 0.85rem; color: #666; }
+        .add-btn { background: var(--gold); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-        /* MENU CARDS */
-        .menu-card { 
-            background: #fff; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            display: flex; 
-            flex-direction: column;
-            transition: transform 0.3s ease;
-            border: 1px solid #eee;
-        }
-        .menu-card:hover { transform: translateY(-5px); }
+        /* Warenkorb Sidebar */
+        .cart-sidebar { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: fit-content; position: sticky; top: 20px; }
+        .cart-title { font-family: 'Playfair Display'; font-size: 1.5rem; margin-bottom: 1rem; border-bottom: 2px solid var(--gold); padding-bottom: 5px; }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
+        .cart-total { font-weight: bold; font-size: 1.2rem; margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px; display: flex; justify-content: space-between; }
         
-        .menu-img-box { position: relative; width: 100%; height: 200px; overflow: hidden; cursor: zoom-in; }
-        .menu-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .menu-card:hover .menu-img-box img { transform: scale(1.1); }
-
-        .menu-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; }
-        .menu-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
-        .menu-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--cream); }
-        .menu-price { color: var(--gold); font-weight: 700; font-size: 1.1rem; }
-        .menu-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 1rem; }
-        .menu-tags { margin-top: auto; }
-        .tag { font-size: 0.7rem; background: var(--dark); padding: 2px 8px; border-radius: 4px; margin-right: 5px; color: var(--gold); border: 1px solid #ddd; }
-        .tag.spicy { color: #c44030; border-color: #f8d7da; }
-
-        /* LIGHTBOX */
-        #lightbox {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); justify-content: center; align-items: center;
-        }
-        #lightbox img { max-width: 90%; max-height: 80%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
-        #lightbox .close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 40px; cursor: pointer; }
+        #paypal-button-container { margin-top: 20px; }
 
         @media (max-width: 768px) {
-            .menu-container { grid-template-columns: 1fr; }
-            nav { padding: 1rem; }
-            .section-title { font-size: 2rem; }
+            .container { grid-template-columns: 1fr; }
+            .cart-sidebar { position: static; }
         }
-
-        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s all ease; }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
 
-    <nav id="navbar">
-        <div class="nav-logo"><strong>ChangThai</strong></div>
-        <ul class="nav-links">
-            <li><a href="#speisekarte">Speisekarte</a></li>
-            <li><a href="#kontakt">Kontakt</a></li>
-        </ul>
-    </nav>
+<header>
+    <h1>ChangThai Köln - Online Bestellung</h1>
+</header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-tagline">Authentisch. Frisch.</h1>
-            <p>Original Thaiküche in Köln-Sülz</p>
-        </div>
-    </section>
-
-    <section class="speisekarte" id="speisekarte">
-        <h2 class="section-title">Speisekarte</h2>
-
-        <div class="menu-tabs">
-            <button class="tab-btn active" onclick="openCat('curry')">Curries</button>
-            <button class="tab-btn" onclick="openCat('noodles')">Nudeln & Reis</button>
-            <button class="tab-btn" onclick="openCat('vorspeise')">Vorspeisen</button>
-        </div>
-
-        <!-- KATEGORIE: CURRY -->
-        <div id="curry" class="menu-container active">
-            <!-- Gericht 1 -->
-            <div class="menu-card reveal">
-                <div class="menu-img-box" onclick="zoomImg('https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?auto=format&fit=crop&w=800&q=80')">
-                    <img src="https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?auto=format&fit=crop&w=800&q=80" alt="Grünes Curry">
+<div class="container">
+    <!-- Speisekarte -->
+    <div class="menu-section">
+        <div class="menu-grid">
+            <!-- Beispiel 1 -->
+            <div class="dish-card">
+                <div class="dish-info">
+                    <h3>31. Gaeng Kiaw Waan (Grünes Curry)</h3>
+                    <p>Hähnchen, Kokosmilch, Thai-Basilikum</p>
+                    <strong>9.50 €</strong>
                 </div>
-                <div class="menu-content">
-                    <div class="menu-header">
-                        <span class="menu-title">31. Gaeng Kiaw Waan</span>
-                        <span class="menu-price">9,00 €</span>
-                    </div>
-                    <p class="menu-desc">Grünes Thai-Curry mit Kokosmilch, Bambus, Auberginen, Paprika und Thai-Basilikum. Serviert mit Reis.</p>
-                    <div class="menu-tags">
-                        <span class="tag spicy">🌶 scharf</span>
-                        <span class="tag">Hähnchen / Tofu</span>
-                    </div>
-                </div>
+                <button class="add-btn" onclick="addToCart('Grünes Curry', 9.50)">+</button>
             </div>
-
-            <!-- Gericht 2 -->
-            <div class="menu-card reveal">
-                <div class="menu-img-box" onclick="zoomImg('https://images.unsplash.com/photo-1625398407796-82650a8c135f?auto=format&fit=crop&w=800&q=80')">
-                    <img src="https://images.unsplash.com/photo-1625398407796-82650a8c135f?auto=format&fit=crop&w=800&q=80" alt="Rotes Curry">
+            <!-- Beispiel 2 -->
+            <div class="dish-card">
+                <div class="dish-info">
+                    <h3>63. Pad Thai</h3>
+                    <p>Reisnudeln, Erdnüsse, Ei, Garnelen</p>
+                    <strong>11.50 €</strong>
                 </div>
-                <div class="menu-content">
-                    <div class="menu-header">
-                        <span class="menu-title">32. Gaeng Panang</span>
-                        <span class="menu-price">9,00 €</span>
-                    </div>
-                    <p class="menu-desc">Rotes Thai-Curry mit Kokosmilch, Erdnüssen, Paprika und Thai-Basilikum. Herzhaft und cremig.</p>
-                    <div class="menu-tags">
-                        <span class="tag spicy">🌶 scharf</span>
-                        <span class="tag">Rind / Ente +2€</span>
-                    </div>
+                <button class="add-btn" onclick="addToCart('Pad Thai', 11.50)">+</button>
+            </div>
+            <!-- Beispiel 3 -->
+            <div class="dish-card">
+                <div class="dish-info">
+                    <h3>03. Popia Tord (Frühlingsrollen)</h3>
+                    <p>4 Stück, vegetarisch mit Dip</p>
+                    <strong>5.00 €</strong>
                 </div>
+                <button class="add-btn" onclick="addToCart('Frühlingsrollen', 5.00)">+</button>
             </div>
         </div>
-
-        <!-- KATEGORIE: NUDELN -->
-        <div id="noodles" class="menu-container">
-            <div class="menu-card reveal">
-                <div class="menu-img-box" onclick="zoomImg('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80')">
-                    <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80" alt="Pad Thai">
-                </div>
-                <div class="menu-content">
-                    <div class="menu-header">
-                        <span class="menu-title">63. Pad Thai</span>
-                        <span class="menu-price">9,50 €</span>
-                    </div>
-                    <p class="menu-desc">Gebratene Reisnudeln mit Ei, Erdnüssen, Sojasprossen und feiner Tamarindensauce. Der Klassiker.</p>
-                    <div class="menu-tags">
-                        <span class="tag">Bestseller</span>
-                        <span class="tag">Garnelen +2€</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- KATEGORIE: VORSPEISE -->
-        <div id="vorspeise" class="menu-container">
-            <div class="menu-card reveal">
-                <div class="menu-img-box" onclick="zoomImg('https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=800&q=80')">
-                    <img src="https://images.unsplash.com/photo-1541696432-82c6da8ce7bf?auto=format&fit=crop&w=800&q=80" alt="Frühlingsrollen">
-                </div>
-                <div class="menu-content">
-                    <div class="menu-header">
-                        <span class="menu-title">03. Popia Tord</span>
-                        <span class="menu-price">5,00 €</span>
-                    </div>
-                    <p class="menu-desc">Hausgemachte Frühlingsrollen mit Gemüsefüllung und süßem Chili-Dip (4 Stück).</p>
-                    <div class="menu-tags">
-                        <span class="tag">Vegan</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </section>
-
-    <!-- Lightbox Modal -->
-    <div id="lightbox">
-        <span class="close" onclick="closeImg()">&times;</span>
-        <img id="lightboxImg" src="">
     </div>
 
-    <script>
-        // Tab Logik
-        function openCat(catId) {
-            const containers = document.querySelectorAll('.menu-container');
-            const tabs = document.querySelectorAll('.tab-btn');
-            
-            containers.forEach(c => c.classList.remove('active'));
-            tabs.forEach(t => t.classList.remove('active'));
-            
-            document.getElementById(catId).classList.add('active');
-            event.currentTarget.classList.add('active');
+    <!-- Warenkorb -->
+    <div class="cart-sidebar">
+        <div class="cart-title">Dein Warenkorb</div>
+        <div id="cart-items">
+            <p style="color: #999;">Der Warenkorb ist leer.</p>
+        </div>
+        <div class="cart-total">
+            <span>Gesamtbetrag:</span>
+            <span id="total-amount">0.00 €</span>
+        </div>
+
+        <!-- PayPal Button Integration -->
+        <div id="paypal-button-container"></div>
+    </div>
+</div>
+
+<script>
+    let cart = [];
+    let total = 0;
+
+    function addToCart(name, price) {
+        cart.push({ name, price });
+        total += price;
+        renderCart();
+    }
+
+    function renderCart() {
+        const container = document.getElementById('cart-items');
+        const totalContainer = document.getElementById('total-amount');
+        
+        if (cart.length === 0) {
+            container.innerHTML = '<p style="color: #999;">Der Warenkorb ist leer.</p>';
+            totalContainer.innerText = "0.00 €";
+            return;
         }
 
-        // Lightbox Logik
-        function zoomImg(src) {
-            const lb = document.getElementById('lightbox');
-            const lbImg = document.getElementById('lightboxImg');
-            lbImg.src = src;
-            lb.style.display = 'flex';
+        container.innerHTML = cart.map((item, index) => `
+            <div class="cart-item">
+                <span>${item.name}</span>
+                <span>${item.price.toFixed(2)} €</span>
+            </div>
+        `).join('');
+
+        totalContainer.innerText = total.toFixed(2) + " €";
+        
+        // Buttons nur rendern, wenn etwas im Korb ist und sie noch nicht da sind
+        if (cart.length > 0 && !document.querySelector('.paypal-buttons')) {
+            initPayPalButton();
         }
+    }
 
-        function closeImg() {
-            document.getElementById('lightbox').style.display = 'none';
-        }
+    function initPayPalButton() {
+        paypal.Buttons({
+            // Ermöglicht PayPal, Pay Later, SEPA, Debit/Credit & Apple/Google Pay (je nach Browser/Konto)
+            style: {
+                layout: 'vertical',
+                color:  'gold',
+                shape:  'rect',
+                label:  'checkout'
+            },
 
-        // Reveal Animation beim Scrollen
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: total.toFixed(2) // Dynamischer Betrag aus dem Warenkorb
+                        },
+                        description: "ChangThai Essen Bestellung"
+                    }]
+                });
+            },
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Zahlung erfolgreich! Vielen Dank, ' + details.payer.name.given_name + '!');
+                    // Hier könntest du den Warenkorb leeren oder an dein Küchensystem senden
+                    cart = [];
+                    total = 0;
+                    renderCart();
+                    document.getElementById('paypal-button-container').innerHTML = "<p>Bestellung erhalten!</p>";
+                });
+            },
 
-        // Nav Scroll Effekt
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) nav.classList.add('scrolled');
-            else nav.classList.remove('scrolled');
-        });
-    </script>
+            onError: function(err) {
+                console.error('PayPal Error:', err);
+                alert('Es gab einen Fehler bei der Zahlung. Bitte versuchen Sie es erneut.');
+            }
+        }).render('#paypal-button-container');
+    }
+</script>
+
 </body>
 </html>
