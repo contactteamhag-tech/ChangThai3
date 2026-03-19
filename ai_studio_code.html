@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChangThai Imbiss Köln – Original Thaiküche in Sülz</title>
+    <!-- Bestehende Fonts & Meta Tags -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Noto+Serif+Thai:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root{
+            --gold:#8C5028;
+            --gold-light:#A86838;
+            --gold-dark:#6E3E1C;
+            --black:#0c0c0c; /* Geändert auf echtes Dunkel für Kontrast */
+            --dark:#F8F5F1;
+            --cream:#2D2018;
+            --red-thai:#C44030;
+            --white:#FFFFFF;
+            --font-display:'Playfair Display',serif;
+            --font-body:'DM Sans',sans-serif;
+        }
+
+        /* --- BESTELLSYSTEM CSS --- */
+        
+        /* Plus Button in der Speisekarte */
+        .menu-item { position: relative; cursor: pointer; transition: 0.3s; }
+        .add-to-cart-btn {
+            background: var(--gold);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+        .add-to-cart-btn:hover { background: var(--gold-light); transform: scale(1.1); }
+
+        /* Floating Cart Button */
+        #floating-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gold);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transform: translateY(100px);
+            transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        #floating-cart.visible { transform: translateY(0); }
+
+        /* Cart Sidebar (Drawer) */
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background: var(--white);
+            z-index: 2000;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            transition: 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .cart-drawer.open { right: 0; }
+        .cart-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: var(--dark); }
+        .cart-content { flex: 1; overflow-y: auto; padding: 20px; }
+        .cart-footer { padding: 20px; border-top: 1px solid #eee; background: var(--dark); }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; }
+        .cart-item-qty { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
+        
+        /* Modal für Protein-Auswahl */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .option-list { list-style: none; margin-top: 20px; }
+        .option-item {
+            padding: 12px;
+            border: 1px solid #eee;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .option-item:hover { border-color: var(--gold); background: var(--dark); }
+        
+        .checkout-btn {
+            background: var(--gold);
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Vorhandene Styles beibehalten... */
+        body{font-family:var(--font-body);background:var(--white);color:var(--cream);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+        nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1rem 3rem;display:flex;justify-content:space-between;align-items:center;transition:all .5s cubic-bezier(.22,1,.36,1)}
+        nav.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(20px);padding:.5rem 3rem;border-bottom:1px solid rgba(140,80,40,.18)}
+        /* ... (Alle anderen Styles aus deinem Original-Code hier einfügen) ... */
+    </style>
+</head>
+<body>
+
+    <!-- DEIN BESTEHENDER NAV CODE -->
+    <nav id="navbar">
+        <a href="#home" class="nav-logo-wrap">
+            <img src="data:image/png;base64,..." alt="ChangThai" class="nav-logo-img">
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about">Über uns</a></li>
+            <li><a href="#speisekarte">Speisekarte</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+            <li><a href="tel:022129966093" class="nav-phone">☎ 0221 299 660 93</a></li>
+        </ul>
+    </nav>
+
+    <!-- FLOATING CART BUTTON -->
+    <div id="floating-cart" onclick="toggleCart()">
+        <span>🛒</span>
+        <span id="cart-count">0</span> Gerichte - <span id="cart-total-float">0,00 €</span>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3>Dein Warenkorb</h3>
+            <button onclick="toggleCart()" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+        </div>
+        <div class="cart-content" id="cartItems">
+            <p style="text-align:center; color:#888;">Dein Warenkorb ist noch leer.</p>
+        </div>
+        <div class="cart-footer">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem; margin-bottom:15px;">
+                <span>Gesamtbetrag</span>
+                <span id="cart-sum">0,00 €</span>
+            </div>
+            <button class="checkout-btn" onclick="alert('Bestellung wird an WhatsApp/System gesendet...')">Zur Kasse</button>
+        </div>
+    </div>
+
+    <!-- OPTION MODAL -->
+    <div class="modal-overlay" id="optionModal">
+        <div class="modal">
+            <h3 id="modalTitle">Wähle deine Beilage</h3>
+            <div id="optionList" class="option-list">
+                <!-- Wird dynamisch befüllt -->
+            </div>
+            <button class="btn btn-outline" style="width:100%; margin-top:15px;" onclick="closeModal()">Abbrechen</button>
+        </div>
+    </div>
+
+    <!-- DEIN BESTEHENDER HERO CODE -->
+    <section class="hero" id="home">...</section>
+
+    <!-- SPEISEKARTE (Beispiel für Integration der Buttons) -->
+    <section class="speisekarte" id="speisekarte">
+        <div class="speisekarte-header">
+            <div class="section-label">Speisekarte</div>
+            <h2 class="section-title">Unsere Gerichte</h2>
+        </div>
+
+        <!-- Beispiel-Kategorie -->
+        <div class="menu-category active">
+            <div class="menu-items">
+                <!-- Beispiel 1: Fingerfood (Ohne Auswahl) -->
+                <div class="menu-item" onclick="quickAdd('03', 'Popia Tord', 5.00)">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name"><span class="menu-item-num">03</span>Popia Tord</div>
+                        <div class="menu-item-desc">Frittierte Thai-Frühlingsrollen</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <div class="menu-item-price">5,00 €</div>
+                        <button class="add-to-cart-btn">+</button>
+                    </div>
+                </div>
+
+                <!-- Beispiel 2: Curry (Mit Auswahl) -->
+                <div class="menu-item" onclick="openOptions('31', 'Gaeng Kiaw Waan', 9.00)">
+                    <div class="menu-item-info">
+                        <div class="menu-item-name"><span class="menu-item-num">31</span>Gaeng Kiaw Waan</div>
+                        <div class="menu-item-desc">Grünes Thai-Curry mit Kokosmilch...</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <div class="menu-item-price">ab 9,00 €</div>
+                        <button class="add-to-cart-btn">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESTLICHER CODE (About, Kontakt, Footer) -->
+
+    <script>
+        // --- WARENKORB LOGIK ---
+        let cart = [];
+        
+        const proteins = [
+            { name: "Hühnerfleisch", extra: 0 },
+            { name: "Tofu", extra: 0 },
+            { name: "Rindfleisch", extra: 2.00 },
+            { name: "Garnelen", extra: 3.50 },
+            { name: "Knusprige Ente", extra: 4.00 }
+        ];
+
+        let pendingItem = null;
+
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('open');
+        }
+
+        function openOptions(id, name, basePrice) {
+            pendingItem = { id, name, basePrice };
+            const list = document.getElementById('optionList');
+            list.innerHTML = '';
+            
+            proteins.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                item.innerHTML = `<span>${p.name}</span> <span>+ ${(p.extra).toFixed(2)} €</span>`;
+                item.onclick = () => selectOption(p);
+                list.appendChild(item);
+            });
+            document.getElementById('optionModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('optionModal').style.display = 'none';
+        }
+
+        function selectOption(protein) {
+            const finalPrice = pendingItem.basePrice + protein.extra;
+            const cartItem = {
+                id: pendingItem.id + '-' + protein.name,
+                displayName: `${pendingItem.name} (${protein.name})`,
+                price: finalPrice,
+                qty: 1
+            };
+            addToCart(cartItem);
+            closeModal();
+        }
+
+        function quickAdd(id, name, price) {
+            addToCart({ id, displayName: name, price, qty: 1 });
+        }
+
+        function addToCart(newItem) {
+            const existing = cart.find(item => item.id === newItem.id);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push(newItem);
+            }
+            updateUI();
+            if(!document.getElementById('cartDrawer').classList.contains('open')) {
+                // Optional: Öffne Warenkorb beim ersten Hinzufügen
+            }
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateUI();
+        }
+
+        function updateUI() {
+            const container = document.getElementById('cartItems');
+            const countEl = document.getElementById('cart-count');
+            const totalFloat = document.getElementById('cart-total-float');
+            const totalSum = document.getElementById('cart-sum');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888;">Dein Warenkorb ist leer.</p>';
+                document.getElementById('floating-cart').classList.remove('visible');
+            } else {
+                document.getElementById('floating-cart').classList.add('visible');
+                container.innerHTML = '';
+                let total = 0;
+                let count = 0;
+
+                cart.forEach(item => {
+                    total += item.price * item.qty;
+                    count += item.qty;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <strong>${item.displayName}</strong><br>
+                                <div class="cart-item-qty">
+                                    <small>${item.qty} x ${item.price.toFixed(2)} €</small>
+                                    <button onclick="removeFromCart('${item.id}')" style="color:red; border:none; background:none; cursor:pointer;">Löschen</button>
+                                </div>
+                            </div>
+                            <div>${(item.price * item.qty).toFixed(2)} €</div>
+                        </div>
+                    `;
+                });
+
+                countEl.innerText = count;
+                totalFloat.innerText = total.toFixed(2) + ' €';
+                totalSum.innerText = total.toFixed(2) + ' €';
+            }
+        }
+
+        // DEIN BESTEHENDER JS CODE (Scroll, Reveal, Tabs)...
+    </script>
+</body>
+</html>
