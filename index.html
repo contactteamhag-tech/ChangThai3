@@ -4998,6 +4998,95 @@ body.has-quick-cart{padding-bottom:6.4rem;}
 @media (max-width: 640px){.menu-order-suite{padding:.9rem !important;border-radius:20px !important;}.quick-order-inline{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;}.quick-order-open,.quick-order-pay{min-height:3rem;font-size:.84rem;}.quick-cart-bar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:.7rem;gap:.6rem;}.quick-cart-chip{padding:0;}.quick-cart-spacer{display:none;}.quick-cart-bar-btn,.quick-cart-bar-link{width:100%;}.quick-cart-drawer{left:1rem;right:1rem;bottom:max(6.4rem, calc(env(safe-area-inset-bottom) + 5.4rem));width:auto;}.quick-cart-fields-row,.quick-cart-actions{grid-template-columns:1fr;}}
 </style>
 
+
+<style id="background-visibility-boost">
+.hero-scene-inner{
+    filter:saturate(1.08) contrast(1.02) brightness(.88) !important;
+}
+
+.hero-scene-vignette{
+    background:
+        linear-gradient(180deg, rgba(255,249,242,.05) 0%, rgba(255,249,242,.03) 24%, rgba(255,249,242,.10) 58%, rgba(248,241,232,.34) 100%),
+        radial-gradient(circle at 50% 42%, rgba(255,255,255,.14) 0%, transparent 30%),
+        radial-gradient(circle at 50% 58%, rgba(0,0,0,0) 0%, rgba(0,0,0,.07) 76%, rgba(0,0,0,.11) 100%) !important;
+}
+
+.hero::before{
+    background:linear-gradient(180deg, rgba(250,245,238,.03) 0%, rgba(250,245,238,.08) 28%, rgba(250,245,238,.24) 100%) !important;
+}
+
+.hero{
+    --section-brightness:1.02 !important;
+    --section-overlay:
+        linear-gradient(180deg, rgba(73,34,23,.10) 0%, rgba(109,58,36,.08) 16%, rgba(249,243,233,.10) 46%, rgba(249,243,233,.44) 80%, rgba(249,243,233,.62) 100%),
+        radial-gradient(circle at 50% 0%, rgba(185,135,61,.10), transparent 30%) !important;
+}
+
+.hero-bg{
+    opacity:.78 !important;
+}
+
+.about,
+.speisekarte,
+.usp,
+.vytal,
+.contact,
+.reviews,
+.quickinfo,
+.tv-banner{
+    --section-brightness:.98 !important;
+}
+
+.about,
+.speisekarte,
+.usp,
+.vytal,
+.contact{
+    --section-overlay:
+        linear-gradient(180deg, rgba(251,245,234,.72) 0%, rgba(248,239,226,.48) 100%),
+        linear-gradient(90deg, rgba(251,245,234,.78) 0%, rgba(244,227,200,.20) 34%, rgba(251,245,234,.78) 100%),
+        radial-gradient(circle at top, rgba(185,135,61,.08), transparent 28%) !important;
+}
+
+.reviews,
+.quickinfo,
+.tv-banner{
+    --section-overlay:
+        linear-gradient(180deg, rgba(249,243,235,.68) 0%, rgba(244,235,225,.46) 100%),
+        repeating-linear-gradient(90deg, rgba(53,83,63,.012) 0 1px, transparent 1px 18px) !important;
+}
+
+.about-media{
+    opacity:.42 !important;
+    filter:saturate(1.04) contrast(1.01) !important;
+}
+
+.about-media::after{
+    background:linear-gradient(180deg, rgba(248,245,241,.01), rgba(45,32,24,.08)) !important;
+}
+
+@media (max-width:768px){
+    .hero-scene-inner{
+        filter:saturate(1.06) contrast(1.01) brightness(.84) !important;
+    }
+
+    .hero{
+        --section-brightness-mobile:.90 !important;
+    }
+
+    .about,
+    .speisekarte,
+    .usp,
+    .vytal,
+    .contact,
+    .reviews,
+    .quickinfo,
+    .tv-banner{
+        --section-brightness-mobile:.84 !important;
+    }
+}
+</style>
+
 </head>
 <body>
 <!-- NAV -->
