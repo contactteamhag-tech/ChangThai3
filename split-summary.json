@@ -1,0 +1,14 @@
+{
+  "source_file": "index (19).html",
+  "generated_files": [
+    "index.html",
+    "styles.css",
+    "app.js"
+  ],
+  "style_blocks_extracted": 17,
+  "inline_script_blocks_extracted": 2,
+  "original_size_bytes": 2735805,
+  "new_index_size_bytes": 562767,
+  "styles_css_size_bytes": 2133127,
+  "app_js_size_bytes": 40345
+}
